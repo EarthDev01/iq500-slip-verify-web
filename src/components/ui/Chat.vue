@@ -18,7 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="chat-container bg-[var(--color-secondary)]/50 px-4 py-2">
+  <div class="chat-container bg-[var(--color-darkest)] px-4 py-2">
     <div
       v-for="msg in message"
       :key="msg.message"
@@ -27,9 +27,9 @@ onMounted(() => {
       <div
         :class="[
           msg.type === 'reply'
-            ? 'bg-[var(--color-primary)] text-white'
-            : 'bg-[var(--color-accent-dark)] text-white',
-          'max-w-[80%] rounded-2xl px-4 py-2 break-all text-black',
+            ? 'rounded-l-2xl rounded-tr-2xl bg-[var(--color-accent-dark)] text-white'
+            : 'rounded-tl-2xl rounded-r-2xl bg-[var(--color-gray-dark)] text-white',
+          'max-w-[80%] px-4 py-2 break-all text-black',
         ]"
       >
         <p>{{ msg.message }}</p>
@@ -37,7 +37,7 @@ onMounted(() => {
     </div>
   </div>
 </template>
-<style scoped>
+<style lang="scss">
 .chat-container {
   display: flex;
   flex-direction: column-reverse;

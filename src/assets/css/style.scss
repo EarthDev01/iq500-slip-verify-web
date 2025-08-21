@@ -10,3 +10,16 @@
     color: white;
   }
 }
+
+/* Animation */
+.chat-fade-enter-active,
+.chat-fade-leave-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+.chat-fade-enter-from,
+.chat-fade-leave-to {
+  opacity: 0;
+  transform: translateY(5px);
+}

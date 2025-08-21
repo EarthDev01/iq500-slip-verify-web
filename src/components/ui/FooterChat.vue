@@ -29,11 +29,15 @@ const handleDeleteImage = (index: number) => {
   imagesPreview.value.splice(index, 1)
   filesImg.value.splice(index, 1)
 }
+
+const sendMessage = () => {
+  if (!message.value.trim() && !filesImg.value.length) return
+}
 </script>
 <template>
   <div
     v-if="imagesPreview.length"
-    class="mt-2 flex max-h-[80px] w-full flex-wrap gap-4 overflow-y-auto p-2"
+    class="mt-2 flex max-h-[80px] w-full flex-wrap gap-4 overflow-y-auto bg-[var(--color-dark)] p-2"
   >
     <div
       v-for="(url, index) in imagesPreview"
@@ -48,20 +52,30 @@ const handleDeleteImage = (index: number) => {
       />
       <CloseOutlined
         @click.stop="handleDeleteImage(index)"
-        class="absolute top-0 right-0 rounded p-1 text-sm !font-semibold hover:bg-[var(--color-primary)]"
+        class="absolute top-0 right-0 rounded bg-[var(--color-primary)]/40 p-1 text-sm !font-semibold hover:bg-[var(--color-primary)]"
       />
     </div>
 
-    <a-modal :open="previewVisible" :title="previewTitle" :footer="null" @cancel="handleCancel">
+    <a-modal
+      class="!w-[800px]"
+      :open="previewVisible"
+      :title="previewTitle"
+      :footer="null"
+      @cancel="handleCancel"
+    >
       <img :src="imagePreview" alt="" />
     </a-modal>
   </div>
-  <div class="z-999 flex h-[65px] items-center border-t-2 border-[var(--Gray-Border)]">
+  <div class="z-999 flex h-[65px] items-center gap-2 px-4">
     <BaseInput
+      @submit.prevent="sendMessage"
       v-model="message"
       @update:files="updateFiles"
       placeholder="Message..."
-      class="m-2 rounded-lg bg-[var(--color-secondary)] text-[var(--color-text)]"
+      class="rounded-lg bg-[var(--color-secondary)] text-[var(--color-text)]"
     />
+    <div @click="sendMessage">
+      <img class="cursor-pointer p-2 hover:scale-110" src="@/assets/icon/buttonSend.svg" alt="" />
+    </div>
   </div>
 </template>

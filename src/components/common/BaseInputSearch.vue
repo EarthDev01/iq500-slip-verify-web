@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue'
 import { SearchOutlined } from '@ant-design/icons-vue'
 
-const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   modelValue: {
     type: String,
@@ -21,7 +20,13 @@ const props = defineProps({
     default: 'large',
   },
 })
+const emit = defineEmits(['update:modelValue'])
+
 const inputValue = ref(props.modelValue)
+
+const handleSearch = () => {
+  emit('update:modelValue', inputValue.value)
+}
 
 watch(
   () => props.modelValue,
@@ -29,6 +34,7 @@ watch(
     inputValue.value = newVal
   },
 )
+
 watch(inputValue, (val) => {
   emit('update:modelValue', val)
 })
@@ -45,7 +51,9 @@ watch(inputValue, (val) => {
           :size="size"
           class="w-full"
         >
-          <template #suffix><SearchOutlined /></template>
+          <template #suffix
+            ><SearchOutlined class="cursor-pointer" @click="handleSearch"
+          /></template>
         </a-input>
       </div>
     </form>

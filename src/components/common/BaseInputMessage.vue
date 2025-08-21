@@ -22,6 +22,13 @@ const props = defineProps({
 const inputValue = ref(props.modelValue)
 const uploadedFiles = ref<File[]>([])
 
+const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+  uploadedFiles.value.push(file)
+  emit('update:files', uploadedFiles.value)
+
+  return false
+}
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -32,35 +39,22 @@ watch(
 watch(inputValue, (val) => {
   emit('update:modelValue', val)
 })
-
-const beforeUpload: UploadProps['beforeUpload'] = (file) => {
-  uploadedFiles.value.push(file)
-  emit('update:files', uploadedFiles.value)
-
-  return false
-}
-
-const handleFileChange = () => {}
 </script>
 
 <template>
   <div class="w-full">
-    <form class="w-full max-w-sm">
+    <form @submit.prevent class="w-full max-w-sm">
       <div class="flex items-center gap-4 px-2 py-1">
         <input
           v-model="inputValue"
+          autocomplete="off"
           class="mr-3 w-full appearance-none border-none bg-transparent leading-tight focus:outline-none"
           :type="type"
           :placeholder="placeholder"
         />
-        <a-upload
-          :show-upload-list="false"
-          :multiple="true"
-          :before-upload="beforeUpload"
-          @change="handleFileChange"
-        >
+        <a-upload :show-upload-list="false" :multiple="true" :before-upload="beforeUpload">
           <PaperClipOutlined
-            class="cursor-pointer rounded p-2 !text-white hover:bg-[var(--color-primary)]/50"
+            class="cursor-pointer rounded p-2 !text-white hover:scale-110 hover:bg-[var(--color-primary)]/50"
           />
         </a-upload>
       </div>
