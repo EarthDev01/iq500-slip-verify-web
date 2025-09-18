@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { type ChatMessage } from "@/types/chat";
 
 const useStoreApp = defineStore("app", () => {
-  const roomID = ref<string>('')
+    const message = ref<ChatMessage[]>([])
+
   
-  return { roomID }
+  return { message }
 });
 
 export default useStoreApp;

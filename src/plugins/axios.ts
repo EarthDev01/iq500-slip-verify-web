@@ -1,11 +1,9 @@
 // src/plugins/axios.ts
 import axios, { AxiosError } from 'axios'
 import type { AxiosInstance } from "axios";
-import useStoreApp from '@/stores/userStore'
 
-const storeApp = useStoreApp();
 const apiClient: AxiosInstance = axios.create({
-    baseURL: "https://chat-ms-api-dev.thesonicblue.xyz/api",
+    baseURL: "http://localhost:5050/api",
 })
 
 // Interceptor: เพิ่ม token, จัดการ error

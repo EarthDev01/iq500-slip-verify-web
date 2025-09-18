@@ -1,16 +1,28 @@
 <script setup lang="ts">
 import { type ChatMessage } from '@/types/chat'
 import { ref, onMounted } from 'vue'
-import { mockMessage } from '@/mock'
+import { getMessage } from '@/service/message'
+
+import { showError } from '@/utils/alert_message'
+import userStore from '@/stores/userStore'
+import messageStore from '@/stores/messageStore'
 
 const message = ref<ChatMessage[]>([])
+const storeUser = userStore()
+const storeMessage = messageStore()
 
 const fetchMessages = async (roomID: string) => {
-  message.value = mockMessage.payload
+  const res = await getMessage(roomID)
+  if (res && res.code == 200) {
+    storeMessage.message = res.payload
+  } else {
+    showError(() => res.message)
+    storeMessage.message = []
+  }
 }
 
 onMounted(() => {
-  const roomID = localStorage.getItem('roomChatID')
+  const roomID = storeUser.roomID
   if (roomID) {
     fetchMessages(roomID)
   }
@@ -20,7 +32,7 @@ onMounted(() => {
 <template>
   <div class="chat-container bg-[var(--color-darkest)] px-4 py-2">
     <div
-      v-for="msg in message"
+      v-for="msg in storeMessage.message"
       :key="msg.message"
       :class="['my-2 mt-2 flex', msg.type === 'reply' ? 'justify-end' : 'justify-start']"
     >
@@ -32,7 +44,8 @@ onMounted(() => {
           'max-w-[80%] px-4 py-2 break-all text-black',
         ]"
       >
-        <p>{{ msg.message }}</p>
+        <p v-if="msg.message_type === 'text'">{{ msg.message }}</p>
+        <img v-else :src="msg.message" alt="" />
       </div>
     </div>
   </div>

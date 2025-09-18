@@ -33,12 +33,12 @@ const emit = defineEmits(['cancel', 'confirm'])
         <div class="mt-4 flex justify-end gap-4">
           <a-button
             @click="emit('cancel')"
-            class="!h-[35px] !rounded-full !border-0 !bg-[var(--color-gray-dark)] !text-white"
+            class="!h-[40px] !rounded-full !border-0 !bg-[var(--color-gray-dark)] !text-white"
             >cancel</a-button
           >
           <a-button
             @click="emit('confirm')"
-            class="!h-[35px] !rounded-full !border-0 !bg-[var(--color-orange)] !text-white"
+            class="!h-[40px] !rounded-full !border-0 !bg-[var(--color-orange)] !text-white"
             >Delete</a-button
           >
         </div>

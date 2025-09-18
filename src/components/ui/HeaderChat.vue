@@ -30,14 +30,14 @@ const handleBack = () => {
         <p
           v-if="prop.step == 1"
           @click="emit('stepChange', 0)"
-          class="cursor-pointer text-end underline"
+          class="cursor-pointer text-end text-lg underline"
         >
           register
         </p>
         <p
           v-if="prop.step == 0"
           @click="emit('stepChange', 1)"
-          class="cursor-pointer text-end underline"
+          class="cursor-pointer text-end text-lg underline"
         >
           Login
         </p>

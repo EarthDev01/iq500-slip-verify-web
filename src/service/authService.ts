@@ -9,3 +9,12 @@ export const login = async (payload: LoginPayload) => {
         console.error("Login error:", error);
     }
 };
+
+export const register = async (payload: LoginPayload) => {
+    try {
+        const { data } = await api.post("/register", payload);
+        return data;
+    } catch (error) {
+        console.error("Login error:", error);
+    }
+};

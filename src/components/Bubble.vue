@@ -35,10 +35,10 @@ const handleModal = (visible: boolean) => {
 <template>
   <div class="absolute right-0 bottom-0 p-4">
     <div
-      class="flex size-[60px] cursor-pointer items-center justify-center rounded-full hover:shadow-2xl"
+      class="flex size-[60px] cursor-pointer items-center justify-center rounded-full bg-black hover:shadow-2xl"
       @click="toggleChat"
     >
-      <a-avatar class="!size-full" src="/icon/logo_bubble.png" />
+      AIM
     </div>
   </div>
   <Transition name="chat-fade" appear>
@@ -66,7 +66,9 @@ const handleModal = (visible: boolean) => {
             />
           </Transition>
         </div>
-        <footer-chat v-if="step > 2" />
+        <div class="min-h-[65px]">
+          <footer-chat v-if="step > 2" />
+        </div>
       </div>
     </div>
   </Transition>

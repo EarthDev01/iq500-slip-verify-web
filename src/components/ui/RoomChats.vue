@@ -5,7 +5,8 @@ import { ref, onMounted, computed } from 'vue'
 import BaseInputSearch from '../common/BaseInputSearch.vue'
 import BaseModalConfirms from '../common/BaseModalConfirm.vue'
 import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons-vue'
-import { mockRooms } from '@/mock'
+import { getRoom, postRoom, deleteRoom } from '@/service/roomChatApi'
+import { showError, showSuccess, showInfo, showWarning } from '@/utils/alert_message'
 
 const emit = defineEmits(['stepChange'])
 const roomChats = ref<AllRoomPayload[]>([])
@@ -13,11 +14,19 @@ const storeApp = useStoreApp()
 const showDelete = ref(false)
 const showDeleteId = ref<string>('')
 const search = ref('')
+
 const getAllBusiness = async () => {
-  roomChats.value = mockRooms.payload
+  const res = await getRoom()
+  if (res && res.code == 200) {
+    roomChats.value = res.payload
+  } else {
+    showError(() => res.message)
+    roomChats.value = []
+  }
 }
 
 const selectBusiness = (code: string) => {
+  storeApp.roomID = code
   emit('stepChange', 3)
 }
 
@@ -32,11 +41,32 @@ const handleShowDelete = (id: string) => {
   console.log('Show delete options for room:', id)
 }
 
-const handleDelete = (id: string) => {
-  showDeleteId.value = ''
+const handleDelete = async (id: string) => {
+  showDeleteId.value = id
   showDelete.value = true
-  console.log('Delete room with id:', id)
 }
+
+const confirmDelete = async () => {
+  const res = await deleteRoom(showDeleteId.value)
+  if (res && res.code == 200) {
+    getAllBusiness()
+    showDeleteId.value = ''
+    showDelete.value = false
+  } else {
+    showDelete.value = false
+    showError(() => res.message)
+  }
+}
+
+const addRoom = async () => {
+  const res = await postRoom()
+  if (res && res.code == 200) {
+    getAllBusiness()
+  } else {
+    showError(() => res.message)
+  }
+}
+
 onMounted(async () => {
   getAllBusiness()
 })
@@ -52,7 +82,7 @@ onMounted(async () => {
         <p class="text-lg">Rooms</p>
         <div class="flex gap-4">
           <div
-            @click="selectBusiness('')"
+            @click="addRoom"
             class="flex cursor-pointer items-center gap-1 rounded-2xl px-3 py-1 hover:bg-[var(--color-accent-dark)]"
           >
             <PlusOutlined class="!text-sm" />
@@ -61,7 +91,7 @@ onMounted(async () => {
         </div>
       </div>
       <div
-        class="scroll-hide mt-2 max-h-[450px] overflow-y-auto rounded-lg bg-[var(--color-darkest)]"
+        class="scroll-hide mt-2 max-h-[385px] overflow-y-auto rounded-lg bg-[var(--color-darkest)]"
       >
         <div
           v-for="data in filteredRooms"
@@ -69,8 +99,11 @@ onMounted(async () => {
           :key="data.id"
           class="flex cursor-pointer items-center justify-between border-b-2 border-[var(--color-dark)] px-4 py-3 hover:rounded-lg hover:bg-[var(--color-accent)]/40"
         >
-          <p class="!w-[270px] truncate text-white">
-            {{ data.last_message }}
+          <p
+            class="!w-[270px] truncate text-white"
+            :class="{ '!text-gray-400': !data.last_message }"
+          >
+            {{ data.last_message || 'No message' }}
           </p>
           <div @click.stop="handleShowDelete(data.id)" class="h-[20px]">
             <EllipsisOutlined class="text-xl" v-if="showDeleteId !== data.id" />
@@ -85,10 +118,6 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <BaseModalConfirms
-      :show="showDelete"
-      @cancel="showDelete = false"
-      @confirm="handleDelete(showDeleteId)"
-    />
+    <BaseModalConfirms :show="showDelete" @cancel="showDelete = false" @confirm="confirmDelete()" />
   </div>
 </template>
